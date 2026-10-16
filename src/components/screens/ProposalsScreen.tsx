@@ -14,7 +14,14 @@ import {
   Sparkles,
   Search,
   Lock,
-  UserCheck
+  Phone,
+  PhoneCall,
+  MoreVertical,
+  Paperclip,
+  Smile,
+  Info,
+  X,
+  FileText
 } from 'lucide-react';
 import { UserProfile } from '../../types';
 
@@ -38,9 +45,11 @@ export const ProposalsScreen: React.FC<ProposalsScreenProps> = ({
 }) => {
   const [activeTab, setActiveTab] = useState<'received' | 'sent' | 'chat'>('received');
 
-  // Selected chat partner - null means show the list of available conversations!
+  // Selected chat partner for Full-Screen WhatsApp mode (null = show inbox list)
   const [selectedChatPartner, setSelectedChatPartner] = useState<UserProfile | null>(null);
   const [chatSearchQuery, setChatSearchQuery] = useState('');
+  const [showWaliModal, setShowWaliModal] = useState(false);
+  const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const [unreadCounts, setUnreadCounts] = useState<{ [key: string]: number }>({
     [profiles[1]?.id || 'zainab-26']: 1
   });
@@ -66,7 +75,7 @@ export const ProposalsScreen: React.FC<ProposalsScreenProps> = ({
         id: '1',
         sender: 'them',
         text: 'Assalamu alaikum brother Tausif, my father reviewed your biodata and wanted to know about your future career plans.',
-        time: 'Yesterday'
+        time: 'Yesterday 04:15 PM'
       }
     ],
     [profiles[3]?.id || 'hina-25']: [
@@ -74,13 +83,13 @@ export const ProposalsScreen: React.FC<ProposalsScreenProps> = ({
         id: '1',
         sender: 'them',
         text: 'JazakAllah khair for expressing interest. Can we schedule an intro call with both family walis this weekend?',
-        time: '2 days ago'
+        time: 'Oct 14, 02:20 PM'
       },
       {
         id: '2',
         sender: 'me',
         text: 'Wa iyyakum! Insha’Allah that would be ideal. I will have my father call your Wali on Sunday afternoon.',
-        time: '2 days ago'
+        time: 'Oct 14, 02:45 PM'
       }
     ]
   });
@@ -93,7 +102,7 @@ export const ProposalsScreen: React.FC<ProposalsScreenProps> = ({
       profile: profiles[0],
       tag: 'Family Connected',
       tagColor: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-      status: 'Active now'
+      status: 'Online'
     },
     {
       profile: profiles[1],
@@ -123,7 +132,6 @@ export const ProposalsScreen: React.FC<ProposalsScreenProps> = ({
 
   const handleSelectPartner = (partner: UserProfile) => {
     setSelectedChatPartner(partner);
-    // Mark as read
     if (unreadCounts[partner.id]) {
       setUnreadCounts((prev) => {
         const next = { ...prev };
@@ -147,7 +155,7 @@ export const ProposalsScreen: React.FC<ProposalsScreenProps> = ({
           id: Date.now().toString(),
           sender: 'me',
           text: textToSend,
-          time: 'Just now'
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         }
       ]
     });
@@ -156,12 +164,13 @@ export const ProposalsScreen: React.FC<ProposalsScreenProps> = ({
     }
   };
 
-  // Quick reply options
+  // Quick reply chips
   const quickReplies = [
     'Assalamu Alaikum wa Rahmatullah',
     'Alhamdulillah, insha\'Allah',
     'Can we arrange a family call?',
-    'My parents will contact your Wali'
+    'My parents will contact your Wali',
+    'I have reviewed your biodata'
   ];
 
   return (
@@ -210,7 +219,7 @@ export const ProposalsScreen: React.FC<ProposalsScreenProps> = ({
         <button
           onClick={() => {
             setActiveTab('chat');
-            setSelectedChatPartner(null); // Show list of available chats when clicking chat tab
+            setSelectedChatPartner(null); // Shows the inbox list first
           }}
           className={`flex-1 py-1.5 sm:py-2 text-xs font-bold rounded-xl transition-all flex items-center justify-center gap-1.5 ${
             activeTab === 'chat'
@@ -265,13 +274,12 @@ export const ProposalsScreen: React.FC<ProposalsScreenProps> = ({
             <div className="flex gap-2.5 mt-3 pt-2 border-t border-[#F5D7DF]/60">
               <button
                 onClick={() => {
-                  setSelectedChatPartner(profiles[0]);
-                  setActiveTab('chat');
+                  handleSelectPartner(profiles[0]);
                 }}
                 className="flex-1 flex items-center justify-center gap-1.5 py-2 px-3 bg-[#9B1B47] text-white text-xs font-bold rounded-xl shadow-xs hover:bg-[#83143B] transition-colors"
               >
                 <MessageSquare size={14} />
-                <span>Open Secure Chat</span>
+                <span>Open WhatsApp-Style Chat</span>
               </button>
               <button
                 onClick={() => onSelectProfile(profiles[0])}
@@ -353,228 +361,398 @@ export const ProposalsScreen: React.FC<ProposalsScreenProps> = ({
         </div>
       )}
 
-      {/* TAB 3: SECURE CHAT (LIST FIRST -> CLICK OPENS CHAT SCREEN) */}
+      {/* TAB 3: SECURE CHAT INBOX (WHEN NOT IN FULL SCREEN CHAT) */}
       {activeTab === 'chat' && (
-        <div className="space-y-3">
-          {/* VIEW A: CHAT LIST INBOX (WHEN NO PARTNER IS ACTIVELY OPENED) */}
-          {selectedChatPartner === null ? (
-            <div className="space-y-3 animate-fade-in">
-              {/* Header Box showing How Many Chats are Available */}
-              <div className="p-3.5 bg-gradient-to-r from-[#FFF0F4] to-[#FFF8FA] rounded-2xl border border-[#FADCE3] shadow-xs flex items-center justify-between">
-                <div>
-                  <h3 className="text-xs font-extrabold text-[#2A1620] flex items-center gap-1.5">
-                    <MessageSquare size={14} className="text-[#9B1B47]" />
-                    <span>Active Conversations ({availableChatPartners.length})</span>
-                  </h3>
-                  <p className="text-[11px] text-[#7A6670] mt-0.5">
-                    Select a conversation to start halal matrimonial discussion
-                  </p>
-                </div>
-                <div className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/90 border border-[#F3D5DD] rounded-full text-[10px] text-[#9B1B47] font-bold shadow-xs">
-                  <Lock size={11} />
-                  <span>Wali Supervised</span>
-                </div>
-              </div>
+        <div className="space-y-3 animate-fade-in">
+          {/* Header Box showing How Many Chats are Available */}
+          <div className="p-3.5 bg-gradient-to-r from-[#FFF0F4] to-[#FFF8FA] rounded-2xl border border-[#FADCE3] shadow-xs flex items-center justify-between">
+            <div>
+              <h3 className="text-xs font-extrabold text-[#2A1620] flex items-center gap-1.5">
+                <MessageSquare size={14} className="text-[#9B1B47]" />
+                <span>Active Conversations ({availableChatPartners.length})</span>
+              </h3>
+              <p className="text-[11px] text-[#7A6670] mt-0.5">
+                Tap any conversation to open full-screen WhatsApp chat
+              </p>
+            </div>
+            <div className="inline-flex items-center gap-1 px-2.5 py-1 bg-white/90 border border-[#F3D5DD] rounded-full text-[10px] text-[#9B1B47] font-bold shadow-xs">
+              <Lock size={11} />
+              <span>Wali Supervised</span>
+            </div>
+          </div>
 
-              {/* Chat Search Bar */}
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#9B1B47]">
-                  <Search size={14} />
-                </div>
-                <input
-                  type="text"
-                  value={chatSearchQuery}
-                  onChange={(e) => setChatSearchQuery(e.target.value)}
-                  placeholder="Search chats by name or city..."
-                  className="w-full pl-8 pr-3 py-2 bg-white border border-[#EAC5CE] focus:border-[#9B1B47] rounded-xl text-xs text-[#2A1620] placeholder-[#8E7B85] focus:outline-none shadow-xs transition-colors"
-                />
-              </div>
+          {/* Chat Search Bar */}
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#9B1B47]">
+              <Search size={14} />
+            </div>
+            <input
+              type="text"
+              value={chatSearchQuery}
+              onChange={(e) => setChatSearchQuery(e.target.value)}
+              placeholder="Search chats by name or city..."
+              className="w-full pl-8 pr-3 py-2 bg-white border border-[#EAC5CE] focus:border-[#9B1B47] rounded-xl text-xs text-[#2A1620] placeholder-[#8E7B85] focus:outline-none shadow-xs transition-colors"
+            />
+          </div>
 
-              {/* Conversations List */}
-              <div className="space-y-2">
-                {filteredChatPartners.map(({ profile, tag, tagColor, status }) => {
-                  const msgs = chatMessages[profile.id] || [];
-                  const lastMsg = msgs[msgs.length - 1];
-                  const unread = unreadCounts[profile.id] || 0;
+          {/* Conversations List */}
+          <div className="space-y-2">
+            {filteredChatPartners.map(({ profile, tag, tagColor, status }) => {
+              const msgs = chatMessages[profile.id] || [];
+              const lastMsg = msgs[msgs.length - 1];
+              const unread = unreadCounts[profile.id] || 0;
 
-                  return (
-                    <div
-                      key={profile.id}
-                      onClick={() => handleSelectPartner(profile)}
-                      className="p-3 bg-white hover:bg-[#FFF9FA] border border-[#F3D5DD] hover:border-[#9B1B47] rounded-2xl shadow-xs cursor-pointer transition-all duration-200 group active:scale-[0.99]"
-                    >
-                      <div className="flex items-center gap-3">
-                        {/* Profile Avatar with online green ring */}
-                        <div className="relative w-12 h-12 rounded-full overflow-hidden bg-[#FFF0F3] border border-[#F3D5DD] shrink-0">
-                          <img
-                            src={profile.photoUrl}
-                            alt={profile.name}
-                            className="w-full h-full object-cover filter blur-[1.5px]"
-                          />
-                          <span className="absolute bottom-0.5 right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white ring-1 ring-emerald-300" />
-                        </div>
+              return (
+                <div
+                  key={profile.id}
+                  onClick={() => handleSelectPartner(profile)}
+                  className="p-3 bg-white hover:bg-[#FFF9FA] border border-[#F3D5DD] hover:border-[#9B1B47] rounded-2xl shadow-xs cursor-pointer transition-all duration-200 group active:scale-[0.99]"
+                >
+                  <div className="flex items-center gap-3">
+                    {/* Profile Avatar with online green ring */}
+                    <div className="relative w-12 h-12 rounded-full overflow-hidden bg-[#FFF0F3] border border-[#F3D5DD] shrink-0">
+                      <img
+                        src={profile.photoUrl}
+                        alt={profile.name}
+                        className="w-full h-full object-cover filter blur-[1.5px]"
+                      />
+                      <span className="absolute bottom-0.5 right-0.5 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white ring-1 ring-emerald-300" />
+                    </div>
 
-                        {/* Partner Details & Last message */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-0.5">
-                            <h4 className="text-xs font-bold text-[#2A1620] group-hover:text-[#9B1B47] transition-colors truncate flex items-center gap-1">
-                              <span>{profile.name}, {profile.age}</span>
-                              <CheckCircle2 size={12} className="text-emerald-600 shrink-0" />
-                            </h4>
-                            <span className="text-[10px] text-[#8E7B85] shrink-0">
-                              {lastMsg ? lastMsg.time : 'New'}
-                            </span>
-                          </div>
+                    {/* Partner Details & Last message */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between mb-0.5">
+                        <h4 className="text-xs font-bold text-[#2A1620] group-hover:text-[#9B1B47] transition-colors truncate flex items-center gap-1">
+                          <span>{profile.name}, {profile.age}</span>
+                          <CheckCircle2 size={12} className="text-emerald-600 shrink-0" />
+                        </h4>
+                        <span className="text-[10px] text-[#8E7B85] shrink-0">
+                          {lastMsg ? lastMsg.time : 'New'}
+                        </span>
+                      </div>
 
-                          <div className="flex items-center gap-1.5 mb-1">
-                            <span className={`text-[9px] px-2 py-0.2 rounded-full font-bold border ${tagColor}`}>
-                              {tag}
-                            </span>
-                            <span className="text-[10px] text-[#7A6670] truncate">
-                              · {profile.city}
-                            </span>
-                          </div>
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <span className={`text-[9px] px-2 py-0.2 rounded-full font-bold border ${tagColor}`}>
+                          {tag}
+                        </span>
+                        <span className="text-[10px] text-[#7A6670] truncate">
+                          · {profile.city}
+                        </span>
+                      </div>
 
-                          <div className="flex items-center justify-between">
-                            <p className="text-[11px] text-[#523B47] truncate pr-2">
-                              {lastMsg ? (
-                                <>
-                                  <span className="font-semibold text-[#8E7B85]">
-                                    {lastMsg.sender === 'me' ? 'You: ' : ''}
-                                  </span>
-                                  {lastMsg.text}
-                                </>
-                              ) : (
-                                <span className="italic text-[#8E7B85]">Start conversation...</span>
-                              )}
-                            </p>
-
-                            {unread > 0 ? (
-                              <span className="px-1.5 py-0.5 bg-[#9B1B47] text-white text-[9px] font-bold rounded-full shrink-0 shadow-xs">
-                                {unread} new
+                      <div className="flex items-center justify-between">
+                        <p className="text-[11px] text-[#523B47] truncate pr-2">
+                          {lastMsg ? (
+                            <>
+                              <span className="font-semibold text-[#8E7B85]">
+                                {lastMsg.sender === 'me' ? 'You: ' : ''}
                               </span>
-                            ) : (
-                              <ChevronRight size={15} className="text-[#8E7B85] group-hover:text-[#9B1B47] shrink-0 transition-colors" />
-                            )}
-                          </div>
-                        </div>
+                              {lastMsg.text}
+                            </>
+                          ) : (
+                            <span className="italic text-[#8E7B85]">Start conversation...</span>
+                          )}
+                        </p>
+
+                        {unread > 0 ? (
+                          <span className="px-1.5 py-0.5 bg-[#9B1B47] text-white text-[9px] font-bold rounded-full shrink-0 shadow-xs">
+                            {unread} new
+                          </span>
+                        ) : (
+                          <ChevronRight size={15} className="text-[#8E7B85] group-hover:text-[#9B1B47] shrink-0 transition-colors" />
+                        )}
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                </div>
+              );
+            })}
 
-                {filteredChatPartners.length === 0 && (
-                  <div className="text-center py-8 bg-white rounded-2xl border border-[#F3D5DD] p-4">
-                    <p className="text-xs text-[#7A6670]">No conversations matching "{chatSearchQuery}"</p>
+            {filteredChatPartners.length === 0 && (
+              <div className="text-center py-8 bg-white rounded-2xl border border-[#F3D5DD] p-4">
+                <p className="text-xs text-[#7A6670]">No conversations matching "{chatSearchQuery}"</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================================= */}
+      {/* FULL-SCREEN WHATSAPP-STYLE CHAT MODAL (OVERLAYS ENTIRE SCREEN LIKE WHATSAPP) */}
+      {/* ========================================================================= */}
+      {selectedChatPartner !== null && (
+        <div className="fixed inset-0 z-[150] flex flex-col bg-[#FFF9FA] h-screen w-screen overflow-hidden select-none animate-fade-in">
+          {/* 1. WHATSAPP TOP APP BAR */}
+          <div className="bg-[#FFF0F4] border-b border-[#F0CDD5] px-2.5 sm:px-4 py-2 flex items-center justify-between shadow-xs shrink-0">
+            {/* Left side: Back Arrow + Avatar + Name + Online Status */}
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setSelectedChatPartner(null)}
+                className="p-1.5 -ml-1 text-[#2A1620] hover:text-[#9B1B47] hover:bg-white/80 rounded-full transition-colors active:scale-95"
+                title="Back to Chats"
+              >
+                <ChevronLeft size={24} strokeWidth={2.4} />
+              </button>
+
+              <div
+                onClick={() => onSelectProfile(selectedChatPartner)}
+                className="relative w-10 h-10 rounded-full overflow-hidden border border-[#9B1B47]/30 shrink-0 cursor-pointer"
+              >
+                <img
+                  src={selectedChatPartner.photoUrl}
+                  alt={selectedChatPartner.name}
+                  className="w-full h-full object-cover filter blur-[1.5px]"
+                />
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-white ring-1 ring-emerald-300" />
+              </div>
+
+              <div
+                onClick={() => onSelectProfile(selectedChatPartner)}
+                className="cursor-pointer"
+              >
+                <h3 className="text-xs sm:text-sm font-extrabold text-[#2A1620] leading-tight flex items-center gap-1">
+                  <span>{selectedChatPartner.name}, {selectedChatPartner.age}</span>
+                  <CheckCircle2 size={12} className="text-emerald-600" />
+                </h3>
+                <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                  <span>Online · Wali Monitored</span>
+                </span>
+              </div>
+            </div>
+
+            {/* Right side: Phone/Wali contact button, Biodata button, More menu */}
+            <div className="flex items-center gap-1 sm:gap-2">
+              <button
+                type="button"
+                onClick={() => setShowWaliModal(true)}
+                className="p-2 text-[#9B1B47] hover:bg-white/80 rounded-full transition-colors"
+                title="View Father / Wali Contact"
+              >
+                <Phone size={18} strokeWidth={2.2} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => onSelectProfile(selectedChatPartner)}
+                className="hidden sm:flex items-center gap-1 px-2.5 py-1 text-xs font-bold text-[#9B1B47] bg-white hover:bg-[#FFF0F3] border border-[#EAC5CE] rounded-full shadow-2xs transition-colors"
+              >
+                <FileText size={12} />
+                <span>Biodata</span>
+              </button>
+
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setShowMenuDropdown(!showMenuDropdown)}
+                  className="p-2 text-[#7A6670] hover:text-[#2A1620] hover:bg-white/80 rounded-full transition-colors"
+                >
+                  <MoreVertical size={18} />
+                </button>
+
+                {showMenuDropdown && (
+                  <div className="absolute right-0 mt-1 w-44 bg-white border border-[#EAC5CE] rounded-2xl shadow-xl z-50 p-1.5 space-y-1 text-xs animate-fade-in">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onSelectProfile(selectedChatPartner);
+                        setShowMenuDropdown(false);
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl text-[#2A1620] hover:bg-[#FFF0F3] font-semibold"
+                    >
+                      View Full Biodata
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowWaliModal(true);
+                        setShowMenuDropdown(false);
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl text-[#2A1620] hover:bg-[#FFF0F3] font-semibold"
+                    >
+                      Call Wali (Father)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedChatPartner(null);
+                        setShowMenuDropdown(false);
+                      }}
+                      className="w-full text-left px-3 py-2 rounded-xl text-[#9B1B47] hover:bg-[#FFF0F3] font-bold"
+                    >
+                      Close Chat
+                    </button>
                   </div>
                 )}
               </div>
             </div>
-          ) : (
-            /* VIEW B: CHAT SCREEN WITH SELECTED PARTNER (WITH BACK BUTTON TO CHAT LIST) */
-            <div className="bg-white rounded-3xl border border-[#F3D5DD] shadow-card overflow-hidden animate-fade-in">
-              {/* Back to All Chats + Active Partner Header */}
-              <div className="p-3 bg-gradient-to-r from-[#FFF5F7] to-white border-b border-[#F3D5DD] flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={() => setSelectedChatPartner(null)}
-                    className="flex items-center gap-1 py-1.5 px-2 bg-white hover:bg-[#FFF0F3] border border-[#EAC5CE] hover:border-[#9B1B47] rounded-xl text-xs font-bold text-[#9B1B47] transition-all shadow-xs"
-                    title="Return to Chat List"
+          </div>
+
+          {/* 2. WHATSAPP CHAT CANVAS / WALLPAPER */}
+          <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-3 space-y-3 bg-[#FAF2F4]">
+            {/* Halal Matrimonial Encryption Banner (WhatsApp Style) */}
+            <div className="max-w-md mx-auto p-2 bg-[#FFF0F3] border border-[#F3D5DD] rounded-xl text-center shadow-2xs">
+              <p className="text-[10px] text-[#83143B] flex items-center justify-center gap-1 font-semibold leading-relaxed">
+                <Lock size={11} className="text-[#9B1B47] shrink-0" />
+                <span>Messages are halal-monitored &amp; end-to-end encrypted. Respectful matrimonial intent only.</span>
+              </p>
+            </div>
+
+            {/* Date divider pill (WhatsApp style) */}
+            <div className="flex justify-center">
+              <span className="px-3 py-1 bg-white/90 border border-[#F0CDD5] text-[#7A6670] text-[10px] font-bold rounded-full shadow-2xs uppercase tracking-wider">
+                Today
+              </span>
+            </div>
+
+            {/* Chat Messages */}
+            {(chatMessages[selectedChatPartner.id] || []).map((msg) => (
+              <div
+                key={msg.id}
+                className={`flex flex-col ${msg.sender === 'me' ? 'items-end' : 'items-start'}`}
+              >
+                <div
+                  className={`relative max-w-[85%] sm:max-w-[70%] p-3 rounded-2xl text-xs leading-relaxed shadow-xs ${
+                    msg.sender === 'me'
+                      ? 'bg-gradient-to-r from-[#9B1B47] to-[#C51E50] text-white rounded-tr-xs'
+                      : 'bg-white text-[#2A1620] border border-[#F0CDD5] rounded-tl-xs'
+                  }`}
+                >
+                  <p className="pr-4">{msg.text}</p>
+                  <div
+                    className={`flex items-center justify-end gap-1 text-[9px] mt-1 ${
+                      msg.sender === 'me' ? 'text-white/80' : 'text-[#8E7B85]'
+                    }`}
                   >
-                    <ChevronLeft size={16} strokeWidth={2.4} />
-                    <span>All Chats ({availableChatPartners.length})</span>
-                  </button>
-
-                  <div className="relative w-9 h-9 rounded-full overflow-hidden border border-[#9B1B47]/30 shrink-0 ml-1">
-                    <img
-                      src={selectedChatPartner.photoUrl}
-                      alt={selectedChatPartner.name}
-                      className="w-full h-full object-cover filter blur-[1.5px]"
-                    />
-                    <span className="absolute bottom-0 right-0 w-2 h-2 bg-emerald-500 rounded-full ring-1 ring-white" />
+                    <span>{msg.time}</span>
+                    {msg.sender === 'me' && <CheckCheck size={12} className="text-cyan-200" />}
                   </div>
+                </div>
+              </div>
+            ))}
+          </div>
 
+          {/* 3. QUICK ISLAMIC SUGGESTION CHIPS (WhatsApp Style) */}
+          <div className="px-3 pt-2 pb-1.5 bg-[#FFF0F4] border-t border-[#F0CDD5] overflow-x-auto scrollbar-none flex items-center gap-1.5 shrink-0">
+            <span className="text-[10px] font-bold text-[#8E7B85] shrink-0 mr-0.5">Quick:</span>
+            {quickReplies.map((reply) => (
+              <button
+                key={reply}
+                type="button"
+                onClick={() => handleSendMessage(reply)}
+                className="px-2.5 py-1 bg-white hover:bg-[#FFF0F3] text-[#7A6670] hover:text-[#9B1B47] border border-[#EAC5CE] hover:border-[#9B1B47] rounded-full text-[10px] font-semibold whitespace-nowrap transition-colors shadow-2xs active:scale-95"
+              >
+                {reply}
+              </button>
+            ))}
+          </div>
+
+          {/* 4. WHATSAPP BOTTOM INPUT BAR */}
+          <div className="p-2 sm:p-3 bg-white border-t border-[#F0CDD5] flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              onClick={() => handleSendMessage('🌸')}
+              className="p-2 text-[#7A6670] hover:text-[#9B1B47] rounded-full hover:bg-[#FFF0F3] transition-colors"
+            >
+              <Smile size={20} />
+            </button>
+
+            <input
+              type="text"
+              value={inputVal}
+              onChange={(e) => setInputVal(e.target.value)}
+              onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+              placeholder="Type a respectful message..."
+              className="flex-1 py-2.5 px-4 bg-[#FFF9FA] border border-[#EAC5CE] focus:border-[#9B1B47] rounded-full text-xs text-[#2A1620] placeholder-[#8E7B85] focus:outline-none shadow-xs"
+            />
+
+            <button
+              type="button"
+              onClick={() => setShowWaliModal(true)}
+              className="p-2 text-[#7A6670] hover:text-[#9B1B47] rounded-full hover:bg-[#FFF0F3] transition-colors"
+              title="Share / Contact Wali"
+            >
+              <Paperclip size={18} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleSendMessage()}
+              className="w-10 h-10 rounded-full bg-gradient-to-r from-[#9B1B47] to-[#C51E50] text-white flex items-center justify-center hover:from-[#83143B] hover:to-[#B01A44] active:scale-95 shadow-md shadow-[#9B1B47]/30 transition-all shrink-0"
+              title="Send Message"
+            >
+              <Send size={16} strokeWidth={2.4} />
+            </button>
+          </div>
+
+          {/* 5. WALI CONTACT SHEET / MODAL */}
+          {showWaliModal && (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
+              <div className="w-full max-w-sm bg-white rounded-3xl p-5 border border-[#F3D5DD] shadow-2xl relative animate-scale-up">
+                <button
+                  type="button"
+                  onClick={() => setShowWaliModal(false)}
+                  className="absolute top-4 right-4 p-1 rounded-full text-[#7A6670] hover:text-[#9B1B47]"
+                >
+                  <X size={18} />
+                </button>
+
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 rounded-2xl bg-[#FFF0F3] text-[#9B1B47] flex items-center justify-center">
+                    <PhoneCall size={22} />
+                  </div>
                   <div>
-                    <h4 className="text-xs font-bold text-[#2A1620] flex items-center gap-1">
-                      <span>{selectedChatPartner.name}, {selectedChatPartner.age}</span>
-                      <CheckCircle2 size={11} className="text-emerald-600" />
-                    </h4>
-                    <span className="text-[10px] text-emerald-700 font-semibold flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full" />
-                      Family Monitored
+                    <h3 className="text-sm font-extrabold text-[#2A1620]">
+                      Wali (Guardian) Contact
+                    </h3>
+                    <p className="text-[11px] text-[#7A6670]">
+                      For serious matrimonial discussion
+                    </p>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-[#FFF9FA] border border-[#F3D5DD] rounded-2xl space-y-2 mb-4 text-xs">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#7A6670]">Guardian:</span>
+                    <span className="font-bold text-[#2A1620]">
+                      {selectedChatPartner.waliContact?.name || `${selectedChatPartner.name}'s Father`}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#7A6670]">Relation:</span>
+                    <span className="font-bold text-[#2A1620]">
+                      {selectedChatPartner.waliContact?.relation || 'Father / Wali'}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[#7A6670]">Contact Number:</span>
+                    <span className="font-mono font-bold text-[#9B1B47]">
+                      {selectedChatPartner.waliContact?.phone || '+91 98221 44812'}
                     </span>
                   </div>
                 </div>
 
-                <button
-                  onClick={() => onSelectProfile(selectedChatPartner)}
-                  className="text-[11px] font-bold text-[#9B1B47] hover:underline px-2 py-1 bg-[#FFF0F3] rounded-lg"
-                >
-                  Biodata &gt;
-                </button>
-              </div>
+                <p className="text-[10px] text-[#7A6670] leading-relaxed mb-4 text-center">
+                  In accordance with Sunnah, parents/guardians should connect early to establish mutual understanding and blessings.
+                </p>
 
-              {/* Halal Privacy Etiquette Notice */}
-              <div className="flex items-center gap-2 px-3.5 py-1.5 bg-[#FFF0F4] border-b border-[#FADCE3] text-[10px] text-[#83143B]">
-                <ShieldAlert size={13} className="shrink-0 text-[#9B1B47]" />
-                <span>In-app chat is encrypted. Keep discussions focused on deen and marriage compatibility.</span>
-              </div>
-
-              {/* Messages Thread */}
-              <div className="p-3.5 space-y-2.5 max-h-72 overflow-y-auto bg-[#FFFDFE]">
-                {(chatMessages[selectedChatPartner.id] || []).map((msg) => (
-                  <div
-                    key={msg.id}
-                    className={`flex flex-col ${msg.sender === 'me' ? 'items-end' : 'items-start'}`}
+                <div className="flex gap-2">
+                  <a
+                    href={`tel:${selectedChatPartner.waliContact?.phone || '+919822144812'}`}
+                    className="flex-1 py-2.5 px-4 bg-[#9B1B47] hover:bg-[#83143B] text-white text-xs font-bold rounded-xl text-center shadow-xs flex items-center justify-center gap-1.5"
                   >
-                    <div
-                      className={`max-w-[85%] p-2.5 rounded-2xl text-xs leading-relaxed ${
-                        msg.sender === 'me'
-                          ? 'bg-gradient-to-r from-[#9B1B47] to-[#B01A44] text-white rounded-br-xs shadow-xs'
-                          : 'bg-white text-[#2A1620] border border-[#F3D5DD] rounded-bl-xs shadow-xs'
-                      }`}
-                    >
-                      <p>{msg.text}</p>
-                    </div>
-                    <span className="text-[9px] text-[#8E7B85] mt-0.5 px-1 flex items-center gap-0.5">
-                      <span>{msg.time}</span>
-                      {msg.sender === 'me' && <CheckCheck size={11} className="text-[#9B1B47]" />}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              {/* Quick Suggestion Chips */}
-              <div className="px-3 pt-2 pb-1.5 bg-[#FFF9FA] border-t border-[#F5D7DF]/60 overflow-x-auto scrollbar-none flex items-center gap-1.5">
-                <span className="text-[10px] font-bold text-[#8E7B85] shrink-0 mr-0.5">Quick:</span>
-                {quickReplies.map((reply) => (
+                    <Phone size={14} />
+                    <span>Call Wali Directly</span>
+                  </a>
                   <button
-                    key={reply}
                     type="button"
-                    onClick={() => handleSendMessage(reply)}
-                    className="px-2.5 py-1 bg-white hover:bg-[#FFF0F3] text-[#7A6670] hover:text-[#9B1B47] border border-[#EAC5CE] rounded-full text-[10px] font-semibold whitespace-nowrap transition-colors shadow-2xs"
+                    onClick={() => setShowWaliModal(false)}
+                    className="py-2.5 px-3 bg-[#FFF0F3] text-[#7A6670] hover:text-[#2A1620] text-xs font-bold rounded-xl"
                   >
-                    {reply}
+                    Close
                   </button>
-                ))}
-              </div>
-
-              {/* Message Input Box */}
-              <div className="p-2.5 bg-white border-t border-[#F3D5DD] flex items-center gap-2">
-                <input
-                  type="text"
-                  value={inputVal}
-                  onChange={(e) => setInputVal(e.target.value)}
-                  onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                  placeholder="Type respectful message..."
-                  className="flex-1 py-2 px-3 bg-[#FFF9FA] border border-[#EAC5CE] focus:border-[#9B1B47] rounded-xl text-xs text-[#2A1620] focus:outline-none"
-                />
-                <button
-                  onClick={() => handleSendMessage()}
-                  className="p-2.5 rounded-xl bg-[#9B1B47] text-white hover:bg-[#83143B] active:scale-95 transition-all shadow-xs"
-                >
-                  <Send size={14} />
-                </button>
+                </div>
               </div>
             </div>
           )}
