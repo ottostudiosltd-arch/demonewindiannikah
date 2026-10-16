@@ -99,6 +99,31 @@ export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
         ))}
       </div>
 
+      {/* Quick Suggestion Chips */}
+      <div className="px-3 pt-2 pb-1.5 bg-[#FFF9FA] border-t border-[#F5D7DF]/60 overflow-x-auto scrollbar-none flex items-center gap-1.5">
+        <span className="text-[10px] font-bold text-[#8E7B85] shrink-0 mr-0.5">Quick:</span>
+        {[
+          'Assalamu Alaikum wa Rahmatullah',
+          'Alhamdulillah, insha\'Allah',
+          'Can we arrange a family call?',
+          'My parents will contact your Wali'
+        ].map((reply) => (
+          <button
+            key={reply}
+            type="button"
+            onClick={() => {
+              setMessages((prev) => [
+                ...prev,
+                { id: Date.now().toString(), sender: 'me', text: reply, time: 'Just now' }
+              ]);
+            }}
+            className="px-2.5 py-1 bg-white hover:bg-[#FFF0F3] text-[#7A6670] hover:text-[#9B1B47] border border-[#EAC5CE] rounded-full text-[10px] font-semibold whitespace-nowrap transition-colors shadow-2xs"
+          >
+            {reply}
+          </button>
+        ))}
+      </div>
+
       {/* Message Input Box */}
       <div className="p-3 bg-white border-t border-[#F3D5DD] flex items-center gap-2">
         <input
