@@ -1,18 +1,22 @@
 export type ScreenType = 
   | 'home' 
-  | 'search-options' 
+  | 'new-profiles'
+  | 'search-results' 
   | 'quick-search' 
   | 'advanced-search' 
-  | 'search-results' 
   | 'sidebar-menu'
-  | 'new-profiles'
   | 'proposals'
   | 'favorites'
   | 'secure-chat'
   | 'guidelines'
   | 'books'
   | 'faq'
-  | 'profile-detail';
+  | 'profile'
+  | 'edit-profile'
+  | 'my-photos'
+  | 'profile-completion'
+  | 'privacy-settings'
+  | 'profile-menu';
 
 export type BottomTabType = 'home' | 'new-profiles' | 'search' | 'proposals' | 'profile';
 
@@ -36,6 +40,7 @@ export interface UserProfile {
   isVerified: boolean;
   isOnline: boolean;
   isSaved: boolean;
+  isNew?: boolean;
   aboutMe?: string;
   aboutDeen?: string;
   expectations?: string;

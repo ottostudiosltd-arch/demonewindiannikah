@@ -4,9 +4,10 @@ import { Menu, Globe, Bell, ChevronDown } from 'lucide-react';
 interface MobileHeaderProps {
   onOpenSidebar: () => void;
   onOpenNotifications?: () => void;
+  onNavigateToProfile?: () => void;
 }
 
-export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenSidebar }) => {
+export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenSidebar, onNavigateToProfile }) => {
   const [selectedLang, setSelectedLang] = useState('English');
   const [isLangOpen, setIsLangOpen] = useState(false);
 
@@ -75,7 +76,10 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ onOpenSidebar }) => 
         </button>
 
         {/* User Avatar */}
-        <div className="w-7 h-7 rounded-full overflow-hidden border border-[#9B1B47]/30 ring-1 ring-[#9B1B47]/10 cursor-pointer shadow-xs">
+        <div
+          onClick={onNavigateToProfile}
+          className="w-7 h-7 rounded-full overflow-hidden border border-[#9B1B47]/30 ring-1 ring-[#9B1B47]/10 cursor-pointer shadow-xs active:scale-95 transition-transform"
+        >
           <img
             src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
             alt="My Profile"

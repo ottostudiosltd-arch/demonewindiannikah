@@ -10,6 +10,7 @@ import { MobileHeader } from './components/common/MobileHeader';
 import { BottomNavigation } from './components/common/BottomNavigation';
 import { SiteFooter } from './components/common/SiteFooter';
 import { HomeScreen } from './components/screens/HomeScreen';
+import { NewProfilesScreen } from './components/screens/NewProfilesScreen';
 import { SearchBottomSheet } from './components/screens/SearchBottomSheet';
 import { QuickSearchScreen } from './components/screens/QuickSearchScreen';
 import { AdvancedSearchScreen } from './components/screens/AdvancedSearchScreen';
@@ -19,6 +20,7 @@ import { ProfileDetailModal } from './components/screens/ProfileDetailModal';
 import { ProposalsScreen } from './components/screens/ProposalsScreen';
 import { SecureChatScreen } from './components/screens/SecureChatScreen';
 import { GuidanceBooksScreen } from './components/screens/GuidanceBooksScreen';
+import { ProfileHubScreen } from './components/screens/ProfileHubScreen';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState<ScreenType>('home');
@@ -53,7 +55,7 @@ export default function App() {
   const handleTabChange = (tab: BottomTabType) => {
     setCurrentTab(tab);
     if (tab === 'home') setCurrentScreen('home');
-    if (tab === 'new-profiles') setCurrentScreen('search-results');
+    if (tab === 'new-profiles') setCurrentScreen('new-profiles');
     if (tab === 'search') {
       if (window.innerWidth < 768) {
         setIsSearchSheetOpen(true);
@@ -62,9 +64,7 @@ export default function App() {
       }
     }
     if (tab === 'proposals') setCurrentScreen('proposals');
-    if (tab === 'profile') {
-      setSelectedProfile(profiles[0]);
-    }
+    if (tab === 'profile') setCurrentScreen('profile');
   };
 
   // Open Chat
@@ -84,7 +84,30 @@ export default function App() {
             onOpenQuickSearch={() => setCurrentScreen('quick-search')}
             onSelectProfile={(p) => setSelectedProfile(p)}
             onToggleSave={handleToggleSave}
-            onViewAllProfiles={() => setCurrentScreen('search-results')}
+            onViewAllProfiles={() => {
+              setCurrentScreen('new-profiles');
+              setCurrentTab('new-profiles');
+            }}
+            onNavigateTo={(screen) => setCurrentScreen(screen)}
+          />
+        );
+
+      case 'new-profiles':
+        return (
+          <NewProfilesScreen
+            profiles={profiles}
+            onSelectProfile={(p) => setSelectedProfile(p)}
+            onToggleSave={handleToggleSave}
+          />
+        );
+
+      case 'profile':
+        return (
+          <ProfileHubScreen
+            onBackToHome={() => {
+              setCurrentScreen('home');
+              setCurrentTab('home');
+            }}
             onNavigateTo={(screen) => setCurrentScreen(screen)}
           />
         );
@@ -106,7 +129,6 @@ export default function App() {
         );
 
       case 'search-results':
-      case 'new-profiles':
         return (
           <SearchResultsScreen
             profiles={profiles}
@@ -163,7 +185,10 @@ export default function App() {
             onOpenQuickSearch={() => setCurrentScreen('quick-search')}
             onSelectProfile={(p) => setSelectedProfile(p)}
             onToggleSave={handleToggleSave}
-            onViewAllProfiles={() => setCurrentScreen('search-results')}
+            onViewAllProfiles={() => {
+              setCurrentScreen('new-profiles');
+              setCurrentTab('new-profiles');
+            }}
             onNavigateTo={(screen) => setCurrentScreen(screen)}
           />
         );
@@ -172,10 +197,11 @@ export default function App() {
 
   const showMobileBottomNav =
     currentScreen === 'home' ||
-    currentScreen === 'search-results' ||
     currentScreen === 'new-profiles' ||
+    currentScreen === 'search-results' ||
     currentScreen === 'proposals' ||
-    currentScreen === 'favorites';
+    currentScreen === 'favorites' ||
+    currentScreen === 'profile';
 
   return (
     <div className="min-h-screen bg-[#FFF9FA] text-[#2A1620] flex flex-col font-sans selection:bg-[#FFE4EA] selection:text-[#9B1B47]">
@@ -183,7 +209,13 @@ export default function App() {
       <div className="hidden md:block">
         <DesktopHeader
           currentScreen={currentScreen}
-          onNavigate={(scr) => setCurrentScreen(scr)}
+          onNavigate={(scr) => {
+            setCurrentScreen(scr);
+            if (scr === 'home') setCurrentTab('home');
+            if (scr === 'new-profiles') setCurrentTab('new-profiles');
+            if (scr === 'proposals') setCurrentTab('proposals');
+            if (scr === 'profile') setCurrentTab('profile');
+          }}
           proposalCount={sentProposalIds.length}
         />
       </div>
@@ -192,6 +224,10 @@ export default function App() {
       <div className="md:hidden">
         <MobileHeader
           onOpenSidebar={() => setIsSidebarOpen(true)}
+          onNavigateToProfile={() => {
+            setCurrentScreen('profile');
+            setCurrentTab('profile');
+          }}
         />
       </div>
 
@@ -200,7 +236,7 @@ export default function App() {
         {renderScreenContent()}
       </main>
 
-      {/* 4. FOOTER (Full rich footer on all devices) */}
+      {/* 4. FOOTER (Updated to soft blush/cream theme matching entire site) */}
       <SiteFooter
         onNavigate={(scr) => {
           setCurrentScreen(scr);
@@ -208,7 +244,7 @@ export default function App() {
         }}
       />
 
-      {/* 5. MOBILE BOTTOM NAVIGATION (Native floating bar only on mobile) */}
+      {/* 5. MOBILE BOTTOM NAVIGATION (Fixed bar on mobile) */}
       {showMobileBottomNav && (
         <div className="md:hidden">
           <BottomNavigation
@@ -219,7 +255,7 @@ export default function App() {
         </div>
       )}
 
-      {/* 6. SEARCH OPTIONS BOTTOM SHEET (Screen 2 from design) */}
+      {/* 6. SEARCH OPTIONS BOTTOM SHEET */}
       <SearchBottomSheet
         isOpen={isSearchSheetOpen}
         onClose={() => setIsSearchSheetOpen(false)}
@@ -238,11 +274,17 @@ export default function App() {
         }}
       />
 
-      {/* 7. SIDEBAR MENU DRAWER (Screen 6 from design) */}
+      {/* 7. SIDEBAR MENU DRAWER (Updated to match soft blush/cream theme) */}
       <SidebarMenu
         isOpen={isSidebarOpen}
         onClose={() => setIsSidebarOpen(false)}
-        onNavigate={(scr) => setCurrentScreen(scr)}
+        onNavigate={(scr) => {
+          setCurrentScreen(scr);
+          if (scr === 'home') setCurrentTab('home');
+          if (scr === 'new-profiles') setCurrentTab('new-profiles');
+          if (scr === 'proposals') setCurrentTab('proposals');
+          if (scr === 'profile') setCurrentTab('profile');
+        }}
         activeScreen={currentScreen}
       />
 

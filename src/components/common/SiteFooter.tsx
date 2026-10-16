@@ -8,7 +8,7 @@ interface SiteFooterProps {
 
 export const SiteFooter: React.FC<SiteFooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="mt-16 bg-[#1A1E24] text-white border-t border-white/10 select-none">
+    <footer className="mt-16 bg-gradient-to-b from-[#FFF5F7] to-[#FFF0F4] text-[#2A1620] border-t border-[#F3D5DD] select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           {/* Col 1: Brand & Islamic Mission */}
@@ -17,29 +17,29 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ onNavigate }) => {
               <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-[#9B1B47] to-[#DE1C52] text-white flex items-center justify-center font-extrabold text-base shadow-xs">
                 <span>b</span>
               </div>
-              <span className="text-lg font-black tracking-tight">IndiaNikah</span>
+              <span className="text-lg font-black tracking-tight text-[#2A1620]">IndiaNikah</span>
             </div>
 
-            <p className="text-xs text-[#A6ADB8] leading-relaxed mb-4">
-              India's 100% free (non-profit), privacy-focused Muslim matrimonial platform. No brokers, no agents, no membership fees. Built for genuine, halal Nikah.
+            <p className="text-xs text-[#7A6670] leading-relaxed mb-4">
+              India's 100% free (non-profit), privacy-conscious Muslim matrimonial platform. No brokers, no agents, no membership fees. Built for genuine, halal Nikah.
             </p>
 
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#142A27] border border-[#214D46] text-emerald-400 text-xs font-bold">
-              <ShieldCheck size={15} />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#ECFDF5] border border-[#A7F3D0] text-emerald-800 text-xs font-bold shadow-xs">
+              <ShieldCheck size={15} className="text-emerald-600" />
               <span>100% Free Forever Guarantee</span>
             </div>
           </div>
 
           {/* Col 2: Matrimony Navigation */}
           <div>
-            <h4 className="text-xs font-bold text-[#DE1C52] tracking-wider uppercase mb-3.5">
+            <h4 className="text-xs font-bold text-[#9B1B47] tracking-wider uppercase mb-3.5">
               Matrimony
             </h4>
-            <ul className="space-y-2 text-xs text-[#CBD1D8]">
+            <ul className="space-y-2 text-xs text-[#523B47]">
               <li>
                 <button
                   onClick={() => onNavigate('search-results')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#9B1B47] transition-colors"
                 >
                   Search Compatible Profiles
                 </button>
@@ -47,7 +47,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   onClick={() => onNavigate('new-profiles')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#9B1B47] transition-colors"
                 >
                   Recently Joined Profiles
                 </button>
@@ -55,7 +55,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   onClick={() => onNavigate('quick-search')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#9B1B47] transition-colors"
                 >
                   Quick Match Filter
                 </button>
@@ -63,7 +63,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   onClick={() => onNavigate('proposals')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#9B1B47] transition-colors"
                 >
                   My Proposals &amp; Interests
                 </button>
@@ -71,7 +71,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   onClick={() => onNavigate('secure-chat')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#9B1B47] transition-colors"
                 >
                   Secure In-App Chat
                 </button>
@@ -81,14 +81,14 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ onNavigate }) => {
 
           {/* Col 3: Knowledge & Sunnah */}
           <div>
-            <h4 className="text-xs font-bold text-[#DE1C52] tracking-wider uppercase mb-3.5">
+            <h4 className="text-xs font-bold text-[#9B1B47] tracking-wider uppercase mb-3.5">
               Knowledge &amp; Sunnah
             </h4>
-            <ul className="space-y-2 text-xs text-[#CBD1D8]">
+            <ul className="space-y-2 text-xs text-[#523B47]">
               <li>
                 <button
                   onClick={() => onNavigate('guidelines')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#9B1B47] transition-colors"
                 >
                   Matrimonial Guidelines &amp; Rules
                 </button>
@@ -96,7 +96,7 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   onClick={() => onNavigate('books')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#9B1B47] transition-colors"
                 >
                   Free Islamic Library &amp; Books
                 </button>
@@ -104,15 +104,15 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ onNavigate }) => {
               <li>
                 <button
                   onClick={() => onNavigate('faq')}
-                  className="hover:text-white transition-colors"
+                  className="hover:text-[#9B1B47] transition-colors"
                 >
                   Education FAQs on Nikah &amp; Mahr
                 </button>
               </li>
               <li>
                 <button
-                  onClick={() => alert('Dulha Dulhan Video Series')}
-                  className="hover:text-white transition-colors"
+                  onClick={() => alert('Dulha Dulhan Guidance Course')}
+                  className="hover:text-[#9B1B47] transition-colors"
                 >
                   Dulha Dulhan Guidance Course
                 </button>
@@ -122,36 +122,36 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ onNavigate }) => {
 
           {/* Col 4: Contact & Community Support */}
           <div>
-            <h4 className="text-xs font-bold text-[#DE1C52] tracking-wider uppercase mb-3.5">
+            <h4 className="text-xs font-bold text-[#9B1B47] tracking-wider uppercase mb-3.5">
               Support &amp; Feedback
             </h4>
-            <p className="text-xs text-[#A6ADB8] mb-3 leading-relaxed">
-              Need help with your profile or have feedback? Reach out to our dedicated support.
+            <p className="text-xs text-[#7A6670] mb-3 leading-relaxed">
+              Need help with your profile or have feedback? Reach out to our dedicated community support.
             </p>
             <a
               href="https://wa.me/918482833177?text=Assalamu%20alaikum"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#25D366]/20 border border-[#25D366]/40 text-[#25D366] text-xs font-bold hover:bg-[#25D366]/30 transition-colors mb-3"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-[#25D366]/15 border border-[#25D366]/30 text-emerald-800 text-xs font-bold hover:bg-[#25D366]/25 transition-colors mb-3 shadow-xs"
             >
-              <MessageCircle size={15} />
+              <MessageCircle size={15} className="text-[#25D366]" />
               <span>WhatsApp Support</span>
             </a>
-            <p className="text-[11px] text-[#8C94A0]">
+            <p className="text-[11px] text-[#8E7B85]">
               Your positive feedback helps other Muslim families discover IndiaNikah.
             </p>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#8C94A0]">
+        <div className="pt-6 border-t border-[#F3D5DD] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#7A6670]">
           <p>© {new Date().getFullYear()} IndiaNikah. Built with sincerity for the Muslim Ummah.</p>
           <div className="flex items-center gap-4">
-            <span className="hover:text-white cursor-pointer">Privacy First</span>
+            <span className="hover:text-[#9B1B47] cursor-pointer">Privacy First</span>
             <span>·</span>
-            <span className="hover:text-white cursor-pointer">Terms of Service</span>
+            <span className="hover:text-[#9B1B47] cursor-pointer">Terms of Service</span>
             <span>·</span>
-            <span className="hover:text-white cursor-pointer">Halal Matchmaking</span>
+            <span className="hover:text-[#9B1B47] cursor-pointer">Halal Matchmaking</span>
           </div>
         </div>
       </div>

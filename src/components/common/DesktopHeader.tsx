@@ -29,6 +29,7 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
 
   const navLinks: { id: ScreenType; label: string }[] = [
     { id: 'home', label: 'Home' },
+    { id: 'new-profiles', label: 'New Profiles' },
     { id: 'search-results', label: 'Browse Profiles' },
     { id: 'quick-search', label: 'Search' },
     { id: 'proposals', label: 'My Proposals' },
@@ -146,7 +147,7 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({
 
           {/* User Account Button */}
           <div
-            onClick={() => onNavigate('home')}
+            onClick={() => onNavigate('profile')}
             className="flex items-center gap-2 pl-2 border-l border-[#F0D5DD] cursor-pointer group"
           >
             <div className="w-8 h-8 rounded-full overflow-hidden border border-[#9B1B47]/40 ring-2 ring-[#9B1B47]/10 group-hover:scale-105 transition-transform">

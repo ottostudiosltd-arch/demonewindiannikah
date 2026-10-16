@@ -1,5 +1,33 @@
 import { UserProfile, RecentSearchItem } from '../types';
 
+export const CURRENT_USER: UserProfile = {
+  id: 'tausif-23',
+  name: 'Tausif',
+  age: 23,
+  gender: 'Brother',
+  city: 'Pune',
+  state: 'Maharashtra',
+  education: 'B.Tech, Computer Engineering',
+  occupation: 'Software Engineer',
+  practiceLevel: 'Practicing',
+  sect: 'Sunni / Hanafi',
+  motherTongue: 'Urdu',
+  height: "5'10\"",
+  maritalStatus: 'Never Married',
+  photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
+  isVerified: true,
+  isOnline: true,
+  isSaved: false,
+  aboutMe: "I'm a simple and practicing Muslim, currently pursuing B.Tech in Computer Engineering. I value deen, family, and a peaceful life partner who shares similar values.",
+  aboutDeen: 'Observing 5 daily prayers, halal earnings, and striving to implement Quran & Sunnah in daily family affairs.',
+  expectations: 'Looking for a pious, kind-hearted, deen-conscious sister who values Islamic family harmony, mutual respect, and peaceful companionship.',
+  waliContact: {
+    name: 'Shaikh Farooq (Father)',
+    relation: 'Father',
+    phone: '+91 98230 11223'
+  }
+};
+
 export const SAMPLE_PROFILES: UserProfile[] = [
   {
     id: 'ayesha-24',
@@ -15,13 +43,14 @@ export const SAMPLE_PROFILES: UserProfile[] = [
     motherTongue: 'Urdu',
     height: "5'4\"",
     maritalStatus: 'Never Married',
-    photoUrl: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=400&q=80',
+    photoUrl: 'https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?auto=format&fit=crop&w=500&q=80',
     isVerified: true,
     isOnline: true,
     isSaved: true,
+    isNew: true,
     aboutMe: 'Working at a reputable IT MNC in Pune. Balancing professional ambition with Islamic deen, daily salah, and Quranic recitation. Love reading and baking.',
-    aboutDeen: 'Observes hijab, prays 5 daily salah, keeps fasts in Ramadan, seeks halal earnings, and values sunnah in daily household conduct.',
-    expectations: 'Looking for a pious, kind-hearted brother who strives on the path of Allah, respects his parents, and wants to build a home of peace and tranquility.',
+    aboutDeen: 'Observes hijab, prays 5 daily salah, keeps fasts in Ramadan, seeks halal earnings, and values sunnah in daily conduct.',
+    expectations: 'Looking for a pious, kind-hearted brother who strives on the path of Allah, respects his parents, and wants to build a home of peace.',
     waliContact: {
       name: 'Farooq Ahmed (Father)',
       relation: 'Father / Wali',
@@ -42,13 +71,14 @@ export const SAMPLE_PROFILES: UserProfile[] = [
     motherTongue: 'Hindi / Urdu',
     height: "5'3\"",
     maritalStatus: 'Never Married',
-    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
+    photoUrl: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80',
     isVerified: true,
     isOnline: true,
-    isSaved: false,
+    isSaved: true,
+    isNew: true,
     aboutMe: 'Passionate about scientific research and healthcare. Enjoys nature, community service, and family gatherings. Values humility and honesty.',
-    aboutDeen: 'Regular in 5 times daily prayers, hijab observed, continuously learning Islamic history and Seerah.',
-    expectations: 'Seeking an educated, practicing Muslim professional who values honesty, family values, and mutual emotional and spiritual growth.',
+    aboutDeen: 'Regular in 5 daily prayers, hijab observed, continuously learning Islamic history and Seerah.',
+    expectations: 'Seeking an educated, practicing Muslim professional who values honesty, family values, and spiritual growth.',
     waliContact: {
       name: 'Dr. Rashid Khan',
       relation: 'Father',
@@ -63,16 +93,17 @@ export const SAMPLE_PROFILES: UserProfile[] = [
     city: 'Delhi',
     state: 'Delhi',
     education: 'B.A, Student',
-    occupation: 'Pursuing Masters & Literature',
+    occupation: 'Pursuing Masters in Literature',
     practiceLevel: 'Practicing',
     sect: 'Sunni',
     motherTongue: 'Urdu',
     height: "5'5\"",
     maritalStatus: 'Never Married',
-    photoUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=400&q=80',
+    photoUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=500&q=80',
     isVerified: false,
     isOnline: true,
     isSaved: false,
+    isNew: true,
     aboutMe: 'Final year university student with interests in creative writing, calligraphy, and Islamic art. Raised in a loving, values-driven family.',
     aboutDeen: 'Prays regularly, observes modest dress, values patience and kindness as taught by Prophet Muhammad ﷺ.',
     expectations: 'Looking for a mature, respectful partner who understands the sunnah of marriage and supports learning and deen.',
@@ -96,10 +127,11 @@ export const SAMPLE_PROFILES: UserProfile[] = [
     motherTongue: 'English / Urdu',
     height: "5'4\"",
     maritalStatus: 'Never Married',
-    photoUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80',
+    photoUrl: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80',
     isVerified: true,
     isOnline: true,
     isSaved: false,
+    isNew: true,
     aboutMe: 'Working in fintech sector in Bangalore. Simple lifestyle, loves cooking, traveling, and spending quality time with family.',
     aboutDeen: 'Firm belief in Islamic principles, striving to keep heart clean and perform prayers on time with mindfulness.',
     expectations: 'Seeking a well-educated brother with high moral standards, good humor, and dedication to deen.',
@@ -110,57 +142,59 @@ export const SAMPLE_PROFILES: UserProfile[] = [
     }
   },
   {
-    id: 'fatima-25',
-    name: 'Fatima',
-    age: 25,
+    id: 'noor-24',
+    name: 'Noor',
+    age: 24,
     gender: 'Sister',
     city: 'Hyderabad',
     state: 'Telangana',
-    education: 'MBBS, Doctor',
-    occupation: 'Resident Doctor',
+    education: 'BDS, Doctor',
+    occupation: 'Dental Surgeon',
     practiceLevel: 'Practicing',
     sect: 'Sunni',
     motherTongue: 'Urdu',
-    height: "5'6\"",
+    height: "5'5\"",
     maritalStatus: 'Never Married',
-    photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=400&q=80',
-    isVerified: true,
-    isOnline: false,
-    isSaved: true,
-    aboutMe: 'Dedicated medical doctor with a compassion for healing. Values peaceful domestic life grounded in Islamic traditions.',
-    aboutDeen: 'Regular in daily prayers, modest demeanor, respects Islamic boundaries.',
-    expectations: 'Looking for an educated, career-oriented yet deen-conscious life partner.',
-    waliContact: {
-      name: 'Syed Mansoor',
-      relation: 'Father',
-      phone: '+91 98490 33445'
-    }
-  },
-  {
-    id: 'ahmed-28',
-    name: 'Ahmed',
-    age: 28,
-    gender: 'Brother',
-    city: 'Pune',
-    state: 'Maharashtra',
-    education: 'M.Tech, Computer Science',
-    occupation: 'Lead AI Engineer',
-    practiceLevel: 'Practicing',
-    sect: 'Sunni / Hanafi',
-    motherTongue: 'Urdu',
-    height: "5'11\"",
-    maritalStatus: 'Never Married',
-    photoUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80',
+    photoUrl: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=500&q=80',
     isVerified: true,
     isOnline: true,
     isSaved: false,
-    aboutMe: 'Software professional in Pune. Values sincerity, mutual respect, family bonding, and simple living.',
-    aboutDeen: 'Practicing Muslim following Quran and Sunnah, praying in congregation when possible.',
-    expectations: 'Seeking a deen-conscious sister who values peace, respect, and mutual understanding.',
+    isNew: true,
+    aboutMe: 'Practicing dental surgeon with deep family roots in Hyderabad. Enjoys interior design, calligraphy, and Quranic study circles.',
+    aboutDeen: 'Values modest attire, regular salah, and keeping halal principles foremost in both personal and professional spheres.',
+    expectations: 'Looking for a respectful, career-driven brother who honors Islamic principles and values family ties.',
     waliContact: {
-      name: 'Ahmed (Self / Father contact available)',
-      relation: 'Self',
-      phone: '+91 98220 77889'
+      name: 'Dr. Anwaruddin',
+      relation: 'Father',
+      phone: '+91 98480 99887'
+    }
+  },
+  {
+    id: 'mehwish-27',
+    name: 'Mehwish',
+    age: 27,
+    gender: 'Sister',
+    city: 'Ahmedabad',
+    state: 'Gujarat',
+    education: 'MCA, Developer',
+    occupation: 'Full Stack Engineer',
+    practiceLevel: 'Practicing',
+    sect: 'Sunni',
+    motherTongue: 'Gujarati / Urdu',
+    height: "5'3\"",
+    maritalStatus: 'Never Married',
+    photoUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=500&q=80',
+    isVerified: false,
+    isOnline: true,
+    isSaved: false,
+    isNew: true,
+    aboutMe: 'Software developer who loves problem solving, reading Islamic books, and quiet family life. Grounded and optimistic.',
+    aboutDeen: 'Committed to prayers, Islamic ethics in speech, and mutual respect in domestic partnership.',
+    expectations: 'Looking for an understanding, deen-oriented partner with good character and positive outlook on life.',
+    waliContact: {
+      name: 'Salim Merchant',
+      relation: 'Father',
+      phone: '+91 98250 44332'
     }
   }
 ];
@@ -168,6 +202,13 @@ export const SAMPLE_PROFILES: UserProfile[] = [
 export const RECENT_SEARCHES: RecentSearchItem[] = [
   { id: '1', title: 'Girls, 22 - 28, Maharashtra' },
   { id: '2', title: 'Boys, 25 - 30, Any state' }
+];
+
+export const USER_PHOTOS = [
+  { id: 'p1', url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=400&q=80', isMain: true },
+  { id: 'p2', url: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=400&q=80', isMain: false },
+  { id: 'p3', url: 'https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&w=400&q=80', isMain: false },
+  { id: 'p4', url: 'https://images.unsplash.com/photo-1548013146-72479768bada?auto=format&fit=crop&w=400&q=80', isMain: false },
 ];
 
 export const FAQ_ITEMS = [
