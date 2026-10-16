@@ -308,77 +308,103 @@ export const NewProfilesScreen: React.FC<NewProfilesScreenProps> = ({
             </div>
 
             <div className="space-y-3.5 text-xs">
-              {/* Age Range */}
+              {/* Age Range Stepper */}
               <div>
-                <label className="block font-bold text-[#2A1620] mb-1.5">Age range</label>
-                <div className="flex items-center gap-2">
-                  <div className="relative flex-1">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#9B1B47]">
-                      <Cake size={15} />
-                    </div>
-                    <select
-                      value={minAge}
-                      onChange={(e) => setMinAge(Number(e.target.value))}
-                      className="w-full pl-8 pr-6 py-2 bg-white border border-[#EAC5CE] rounded-xl text-xs font-semibold text-[#2A1620] focus:outline-none focus:border-[#9B1B47]"
+                <div className="flex items-center justify-between mb-1.5">
+                  <label className="font-bold text-[#2A1620] flex items-center gap-1">
+                    <Cake size={13} className="text-[#9B1B47]" />
+                    <span>Age Range</span>
+                  </label>
+                  <span className="text-xs font-bold text-[#9B1B47] bg-[#FFF0F3] px-2 py-0.5 rounded-full">
+                    {minAge} to {maxAge} Years
+                  </span>
+                </div>
+                <div className="flex items-center justify-between gap-2 p-2 bg-white border border-[#EAC5CE] rounded-xl">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-[#7A6670]">Min:</span>
+                    <button
+                      type="button"
+                      onClick={() => setMinAge(Math.max(18, minAge - 1))}
+                      className="w-6 h-6 rounded-md bg-[#FFF0F3] text-[#9B1B47] font-bold flex items-center justify-center hover:bg-[#9B1B47] hover:text-white"
                     >
-                      {[18, 20, 22, 24, 26, 28, 30].map((a) => (
-                        <option key={a} value={a}>{a}</option>
-                      ))}
-                    </select>
+                      -
+                    </button>
+                    <span className="font-bold text-[#2A1620] w-5 text-center">{minAge}</span>
+                    <button
+                      type="button"
+                      onClick={() => setMinAge(Math.min(maxAge - 1, minAge + 1))}
+                      className="w-6 h-6 rounded-md bg-[#FFF0F3] text-[#9B1B47] font-bold flex items-center justify-center hover:bg-[#9B1B47] hover:text-white"
+                    >
+                      +
+                    </button>
                   </div>
-                  <span className="text-xs text-[#7A6670]">to</span>
-                  <div className="relative flex-1">
-                    <select
-                      value={maxAge}
-                      onChange={(e) => setMaxAge(Number(e.target.value))}
-                      className="w-full px-3 pr-6 py-2 bg-white border border-[#EAC5CE] rounded-xl text-xs font-semibold text-[#2A1620] focus:outline-none focus:border-[#9B1B47]"
+                  <span className="text-[#7A6670] font-bold">—</span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-[#7A6670]">Max:</span>
+                    <button
+                      type="button"
+                      onClick={() => setMaxAge(Math.max(minAge + 1, maxAge - 1))}
+                      className="w-6 h-6 rounded-md bg-[#FFF0F3] text-[#9B1B47] font-bold flex items-center justify-center hover:bg-[#9B1B47] hover:text-white"
                     >
-                      {[22, 24, 26, 28, 30, 32, 35, 40].map((a) => (
-                        <option key={a} value={a}>{a}</option>
-                      ))}
-                    </select>
+                      -
+                    </button>
+                    <span className="font-bold text-[#2A1620] w-5 text-center">{maxAge}</span>
+                    <button
+                      type="button"
+                      onClick={() => setMaxAge(Math.min(45, maxAge + 1))}
+                      className="w-6 h-6 rounded-md bg-[#FFF0F3] text-[#9B1B47] font-bold flex items-center justify-center hover:bg-[#9B1B47] hover:text-white"
+                    >
+                      +
+                    </button>
                   </div>
                 </div>
               </div>
 
-              {/* State */}
+              {/* State - Modern Animated Chips */}
               <div>
-                <label className="block font-bold text-[#2A1620] mb-1.5">State</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#9B1B47]">
-                    <MapPin size={15} />
-                  </div>
-                  <select
-                    value={selectedState}
-                    onChange={(e) => setSelectedState(e.target.value)}
-                    className="w-full pl-8 pr-6 py-2 bg-white border border-[#EAC5CE] rounded-xl text-xs font-semibold text-[#2A1620] focus:outline-none focus:border-[#9B1B47]"
-                  >
-                    <option value="All">All States</option>
-                    <option value="Maharashtra">Maharashtra</option>
-                    <option value="Karnataka">Karnataka</option>
-                    <option value="Delhi">Delhi</option>
-                    <option value="Telangana">Telangana</option>
-                    <option value="Gujarat">Gujarat</option>
-                  </select>
+                <label className="block font-bold text-[#2A1620] mb-1.5 flex items-center gap-1">
+                  <MapPin size={13} className="text-[#9B1B47]" />
+                  <span>State / Region</span>
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {['All', 'Maharashtra', 'Karnataka', 'Delhi', 'Telangana', 'Gujarat'].map((st) => (
+                    <button
+                      key={st}
+                      type="button"
+                      onClick={() => setSelectedState(st)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                        selectedState === st
+                          ? 'bg-[#9B1B47] text-white shadow-xs'
+                          : 'bg-white border border-[#EAC5CE] text-[#3E2330] hover:border-[#9B1B47]'
+                      }`}
+                    >
+                      {st === 'All' ? 'All States' : st}
+                    </button>
+                  ))}
                 </div>
               </div>
 
-              {/* Practicing */}
+              {/* Practicing - Modern Animated Chips */}
               <div>
-                <label className="block font-bold text-[#2A1620] mb-1.5">Practicing</label>
-                <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-[#9B1B47]">
-                    <Sparkles size={15} />
-                  </div>
-                  <select
-                    value={selectedPractice}
-                    onChange={(e) => setSelectedPractice(e.target.value)}
-                    className="w-full pl-8 pr-6 py-2 bg-white border border-[#EAC5CE] rounded-xl text-xs font-semibold text-[#2A1620] focus:outline-none focus:border-[#9B1B47]"
-                  >
-                    <option value="Any">Any</option>
-                    <option value="Practicing">Practicing (Daily Salah)</option>
-                    <option value="Very Practicing">Very Practicing (Sunnah Focused)</option>
-                  </select>
+                <label className="block font-bold text-[#2A1620] mb-1.5 flex items-center gap-1">
+                  <Sparkles size={13} className="text-[#9B1B47]" />
+                  <span>Religious Practice</span>
+                </label>
+                <div className="flex flex-wrap gap-1.5">
+                  {['Any', 'Practicing', 'Very Practicing'].map((pr) => (
+                    <button
+                      key={pr}
+                      type="button"
+                      onClick={() => setSelectedPractice(pr)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                        selectedPractice === pr
+                          ? 'bg-[#9B1B47] text-white shadow-xs'
+                          : 'bg-white border border-[#EAC5CE] text-[#3E2330] hover:border-[#9B1B47]'
+                      }`}
+                    >
+                      {pr}
+                    </button>
+                  ))}
                 </div>
               </div>
 

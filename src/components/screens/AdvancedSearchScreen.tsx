@@ -24,9 +24,13 @@ export const AdvancedSearchScreen: React.FC<AdvancedSearchScreenProps> = ({
   onBack,
   onExecuteSearch
 }) => {
-  const [expandedSection, setExpandedSection] = useState<string | null>('religious');
+  const [expandedSection, setExpandedSection] = useState<string | null>('basic');
 
   // Filter states
+  const [lookingFor, setLookingFor] = useState<'Bride' | 'Groom'>('Bride');
+  const [minAge, setMinAge] = useState<number>(20);
+  const [maxAge, setMaxAge] = useState<number>(28);
+  const [maritalStatus, setMaritalStatus] = useState<string>('Never Married');
   const [selectedSects, setSelectedSects] = useState<string[]>(['Sunni']);
   const [selectedPractice, setSelectedPractice] = useState<string>('Practicing');
   const [selectedEducation, setSelectedEducation] = useState<string[]>(['B.Tech / Engineering', 'Masters']);
@@ -82,6 +86,10 @@ export const AdvancedSearchScreen: React.FC<AdvancedSearchScreenProps> = ({
 
   const handleSearch = () => {
     onExecuteSearch({
+      gender: lookingFor === 'Bride' ? 'Sister' : 'Brother',
+      maritalStatus,
+      minAge,
+      maxAge,
       sects: selectedSects,
       practice: selectedPractice,
       education: selectedEducation
@@ -141,6 +149,101 @@ export const AdvancedSearchScreen: React.FC<AdvancedSearchScreenProps> = ({
               {/* Accordion Expandable Filter Options */}
               {isExpanded && (
                 <div className="px-4 pb-3.5 pt-1 border-t border-[#F5D7DF]/60 bg-[#FFFDFE] text-xs space-y-2.5">
+                  {cat.id === 'basic' && (
+                    <div className="space-y-3 pt-1">
+                      <div>
+                        <span className="font-semibold text-[#3E2330] block mb-1.5">I am looking for:</span>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setLookingFor('Bride')}
+                            className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
+                              lookingFor === 'Bride'
+                                ? 'bg-gradient-to-r from-[#9B1B47] to-[#C51E50] text-white shadow-xs'
+                                : 'bg-[#FFF0F3] text-[#523B47] hover:text-[#9B1B47]'
+                            }`}
+                          >
+                            <span>👰 Bride (Dulhan)</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setLookingFor('Groom')}
+                            className={`py-2 px-3 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all ${
+                              lookingFor === 'Groom'
+                                ? 'bg-gradient-to-r from-[#9B1B47] to-[#C51E50] text-white shadow-xs'
+                                : 'bg-[#FFF0F3] text-[#523B47] hover:text-[#9B1B47]'
+                            }`}
+                          >
+                            <span>🤵 Groom (Dulha)</span>
+                          </button>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="font-semibold text-[#3E2330] block mb-1.5">Age Range: ({minAge} - {maxAge} yrs)</span>
+                        <div className="flex items-center justify-between p-2 bg-[#FFF0F3] rounded-xl border border-[#F3D5DD]">
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] text-[#7A6670]">Min:</span>
+                            <button
+                              type="button"
+                              onClick={() => setMinAge(Math.max(18, minAge - 1))}
+                              className="w-6 h-6 rounded-md bg-white text-[#9B1B47] font-bold shadow-xs hover:bg-[#9B1B47] hover:text-white"
+                            >
+                              -
+                            </button>
+                            <span className="font-bold text-[#2A1620] w-5 text-center">{minAge}</span>
+                            <button
+                              type="button"
+                              onClick={() => setMinAge(Math.min(maxAge - 1, minAge + 1))}
+                              className="w-6 h-6 rounded-md bg-white text-[#9B1B47] font-bold shadow-xs hover:bg-[#9B1B47] hover:text-white"
+                            >
+                              +
+                            </button>
+                          </div>
+                          <span className="text-[#8E7B85] font-bold">—</span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="text-[10px] text-[#7A6670]">Max:</span>
+                            <button
+                              type="button"
+                              onClick={() => setMaxAge(Math.max(minAge + 1, maxAge - 1))}
+                              className="w-6 h-6 rounded-md bg-white text-[#9B1B47] font-bold shadow-xs hover:bg-[#9B1B47] hover:text-white"
+                            >
+                              -
+                            </button>
+                            <span className="font-bold text-[#2A1620] w-5 text-center">{maxAge}</span>
+                            <button
+                              type="button"
+                              onClick={() => setMaxAge(Math.min(45, maxAge + 1))}
+                              className="w-6 h-6 rounded-md bg-white text-[#9B1B47] font-bold shadow-xs hover:bg-[#9B1B47] hover:text-white"
+                            >
+                              +
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div>
+                        <span className="font-semibold text-[#3E2330] block mb-1.5">Marital Status:</span>
+                        <div className="flex flex-wrap gap-1.5">
+                          {['Never Married', 'Divorced', 'Widowed', 'Any Status'].map((status) => (
+                            <button
+                              key={status}
+                              type="button"
+                              onClick={() => setMaritalStatus(status)}
+                              className={`px-2.5 py-1 rounded-full text-xs transition-colors ${
+                                maritalStatus === status
+                                  ? 'bg-[#9B1B47] text-white font-semibold'
+                                  : 'bg-white border border-[#EAC5CE] text-[#3E2330]'
+                              }`}
+                            >
+                              {status}
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {cat.id === 'religious' && (
                     <>
                       <div>
@@ -216,7 +319,7 @@ export const AdvancedSearchScreen: React.FC<AdvancedSearchScreenProps> = ({
                     </div>
                   )}
 
-                  {cat.id !== 'religious' && cat.id !== 'education' && (
+                  {cat.id !== 'religious' && cat.id !== 'education' && cat.id !== 'basic' && (
                     <p className="text-[#7A6670] italic text-[11px]">
                       Filter preferences saved for {cat.title.toLowerCase()}.
                     </p>
