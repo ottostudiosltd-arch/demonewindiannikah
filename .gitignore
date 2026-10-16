@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production
+dist/
+build/
+
+# Temp HTML downloads & scripts
+indianikah_home.html
+indianikah_profiles.html
+
+# Environment & Logs
+*.log
+.env
+.env.local
+.DS_Store
+Thumbs.db
