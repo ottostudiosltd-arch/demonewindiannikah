@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   ChevronLeft,
   Send,
@@ -14,11 +14,12 @@ import {
   Paperclip,
   Smile,
   X,
-  Mic,
+  Camera,
   Image,
   FileText,
   MapPin,
-  Sparkles
+  Sparkles,
+  Download
 } from 'lucide-react';
 import { UserProfile } from '../../types';
 
@@ -28,21 +29,29 @@ interface SecureChatScreenProps {
   onSelectProfile?: (profile: UserProfile) => void;
 }
 
+interface MessageItem {
+  id: string;
+  sender: 'me' | 'them';
+  text?: string;
+  imageUrl?: string;
+  time: string;
+}
+
 export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
   partner,
   onBack,
   onSelectProfile
 }) => {
-  const [messages, setMessages] = useState([
+  const [messages, setMessages] = useState<MessageItem[]>([
     {
       id: '1',
-      sender: 'them' as const,
+      sender: 'them',
       text: 'Assalamu alaikum wa rahmatullah. My family reviewed your biodata and would like to understand more about your career plans in Pune.',
       time: '10:30 AM'
     },
     {
       id: '2',
-      sender: 'me' as const,
+      sender: 'me',
       text: 'Walaikum assalam wa rahmatullah! Glad to connect. I work as a Lead Engineer in Pune and live with my parents. We are open to discussions.',
       time: '10:34 AM'
     }
@@ -54,23 +63,63 @@ export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
   const [showMenuDropdown, setShowMenuDropdown] = useState(false);
   const [showAttachMenu, setShowAttachMenu] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [previewPhotoModal, setPreviewPhotoModal] = useState<string | null>(null);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleSend = (customText?: string) => {
-    const textToSend = customText || inputVal;
-    if (!textToSend.trim()) return;
+    const textToSend = customText !== undefined ? customText : inputVal;
+    const finalMsg = textToSend.trim() ? textToSend.trim() : 'Assalamu alaikum wa rahmatullah';
+
     setMessages((prev) => [
       ...prev,
       {
         id: Date.now().toString(),
         sender: 'me',
-        text: textToSend,
+        text: finalMsg,
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       }
     ]);
-    if (!customText) {
+    if (customText === undefined) {
       setInputVal('');
     }
     setShowEmojiPicker(false);
+    setShowAttachMenu(false);
+  };
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: Date.now().toString(),
+          sender: 'me',
+          imageUrl: result,
+          text: inputVal.trim() ? inputVal.trim() : '📷 Shared Photo',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }
+      ]);
+      setInputVal('');
+      setShowAttachMenu(false);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSendSamplePhoto = (url: string, label: string) => {
+    setMessages((prev) => [
+      ...prev,
+      {
+        id: Date.now().toString(),
+        sender: 'me',
+        imageUrl: url,
+        text: label,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+    ]);
     setShowAttachMenu(false);
   };
 
@@ -85,9 +134,9 @@ export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
   const quickEmojis = ['🌸', '❤️', '🤲', '👍', '🌹', '✨', '💍', '🕌', '😊', '🤝'];
 
   return (
-    <div className="fixed inset-0 z-[200] flex flex-col bg-[#FFF9FA] h-screen w-screen overflow-hidden select-none animate-fade-in">
+    <div className="fixed inset-0 top-0 bottom-0 left-0 right-0 z-[200] flex flex-col bg-[#FFF9FA] h-[100dvh] max-h-[100dvh] w-full overflow-hidden select-none animate-fade-in">
       {/* 1. WHATSAPP TOP APP BAR (NO OUTSIDE NAVBARS, 100% FULL SCREEN) */}
-      <div className="bg-[#FFF0F4] border-b border-[#F0CDD5] px-2.5 sm:px-4 py-2.5 flex items-center justify-between shadow-xs shrink-0">
+      <div className="bg-[#FFF0F4] border-b border-[#F0CDD5] px-2.5 sm:px-4 py-2 flex items-center justify-between shadow-xs shrink-0 z-30">
         <div className="flex items-center gap-2">
           {/* Back button */}
           <button
@@ -236,8 +285,8 @@ export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
         </div>
       </div>
 
-      {/* 2. WHATSAPP CHAT CANVAS / WALLPAPER */}
-      <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-4 space-y-3 bg-[#FAF2F4]">
+      {/* 2. WHATSAPP CHAT CANVAS / WALLPAPER (CRITICAL: min-h-0 PREVENTS SCROLL OVERFLOW PUSHING BOTTOM BAR OUT) */}
+      <div className="flex-1 min-h-0 overflow-y-auto px-3 sm:px-6 py-3 space-y-3 bg-[#FAF2F4]">
         {/* Halal Matrimonial Encryption Banner (WhatsApp Style) */}
         <div className="max-w-md mx-auto p-2.5 bg-[#FFF0F3] border border-[#F3D5DD] rounded-xl text-center shadow-2xs">
           <p className="text-[10px] text-[#83143B] flex items-center justify-center gap-1.5 font-semibold leading-relaxed">
@@ -247,7 +296,7 @@ export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
         </div>
 
         {/* WhatsApp Date divider pill */}
-        <div className="flex justify-center my-2">
+        <div className="flex justify-center my-1.5">
           <span className="px-3.5 py-1 bg-white/95 border border-[#F0CDD5] text-[#7A6670] text-[10px] font-bold rounded-full shadow-2xs uppercase tracking-wider">
             Today
           </span>
@@ -260,13 +309,29 @@ export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
             className={`flex flex-col ${msg.sender === 'me' ? 'items-end' : 'items-start'}`}
           >
             <div
-              className={`relative max-w-[85%] sm:max-w-[70%] p-3 rounded-2xl text-xs leading-relaxed shadow-xs ${
+              className={`relative max-w-[85%] sm:max-w-[70%] p-2.5 sm:p-3 rounded-2xl text-xs leading-relaxed shadow-xs ${
                 msg.sender === 'me'
                   ? 'bg-gradient-to-r from-[#9B1B47] to-[#C51E50] text-white rounded-tr-xs'
                   : 'bg-white text-[#2A1620] border border-[#F0CDD5] rounded-tl-xs'
               }`}
             >
-              <p className="pr-4">{msg.text}</p>
+              {/* Photo Message Render */}
+              {msg.imageUrl && (
+                <div
+                  onClick={() => setPreviewPhotoModal(msg.imageUrl || null)}
+                  className="rounded-xl overflow-hidden mb-1.5 max-h-56 max-w-xs border border-white/20 cursor-pointer hover:opacity-95 transition-opacity"
+                >
+                  <img
+                    src={msg.imageUrl}
+                    alt="Shared in Chat"
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              )}
+
+              {/* Text Message Render */}
+              {msg.text && <p className="pr-4 break-words">{msg.text}</p>}
+
               <div
                 className={`flex items-center justify-end gap-1 text-[9px] mt-1 ${
                   msg.sender === 'me' ? 'text-white/80' : 'text-[#8E7B85]'
@@ -281,7 +346,7 @@ export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
       </div>
 
       {/* 3. QUICK ISLAMIC SUGGESTION CHIPS (WhatsApp Style) */}
-      <div className="px-3 pt-2 pb-1.5 bg-[#FFF0F4] border-t border-[#F0CDD5] overflow-x-auto scrollbar-none flex items-center gap-1.5 shrink-0">
+      <div className="shrink-0 px-3 pt-2 pb-1.5 bg-[#FFF0F4] border-t border-[#F0CDD5] overflow-x-auto scrollbar-none flex items-center gap-1.5 z-20">
         <span className="text-[10px] font-bold text-[#8E7B85] shrink-0 mr-0.5">Quick:</span>
         {quickReplies.map((reply) => (
           <button
@@ -295,35 +360,50 @@ export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
         ))}
       </div>
 
-      {/* 4. ATTACHMENT MENU DRAWER (WhatsApp Style) */}
+      {/* 4. ATTACHMENT MENU DRAWER (WhatsApp Style for Photo & Biodata Sharing) */}
       {showAttachMenu && (
-        <div className="bg-white border-t border-[#F0CDD5] px-4 py-3 flex items-center justify-around animate-slide-up shrink-0 shadow-lg">
+        <div className="shrink-0 bg-white border-t border-[#F0CDD5] px-4 py-3 grid grid-cols-4 gap-2 animate-slide-up shadow-xl z-25">
           <button
             type="button"
-            onClick={() => {
-              handleSend('📷 [Requested Verified Family Photo]');
-              setShowAttachMenu(false);
-            }}
-            className="flex flex-col items-center gap-1 text-xs text-[#2A1620] hover:text-[#9B1B47]"
+            onClick={() => fileInputRef.current?.click()}
+            className="flex flex-col items-center gap-1 text-xs text-[#2A1620] hover:text-[#9B1B47] active:scale-95"
           >
-            <div className="w-11 h-11 rounded-full bg-pink-100 text-[#9B1B47] flex items-center justify-center">
-              <Image size={20} />
+            <div className="w-12 h-12 rounded-2xl bg-pink-100 text-[#9B1B47] flex items-center justify-center shadow-xs">
+              <Camera size={22} />
             </div>
-            <span className="text-[10px] font-bold">Photo</span>
+            <span className="text-[10px] font-bold">Gallery/Cam</span>
           </button>
 
           <button
             type="button"
-            onClick={() => {
-              handleSend('📄 [Shared Verified Biodata PDF]');
-              setShowAttachMenu(false);
-            }}
-            className="flex flex-col items-center gap-1 text-xs text-[#2A1620] hover:text-[#9B1B47]"
+            onClick={() =>
+              handleSendSamplePhoto(
+                'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80',
+                '🤵 My Verified Biodata Photo'
+              )
+            }
+            className="flex flex-col items-center gap-1 text-xs text-[#2A1620] hover:text-[#9B1B47] active:scale-95"
           >
-            <div className="w-11 h-11 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center">
-              <FileText size={20} />
+            <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center shadow-xs">
+              <Image size={22} />
             </div>
-            <span className="text-[10px] font-bold">Biodata</span>
+            <span className="text-[10px] font-bold">My Photo</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() =>
+              handleSendSamplePhoto(
+                'https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=600&q=80',
+                '👨‍👩‍👧 Family Gathering Photo'
+              )
+            }
+            className="flex flex-col items-center gap-1 text-xs text-[#2A1620] hover:text-[#9B1B47] active:scale-95"
+          >
+            <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center shadow-xs">
+              <Users size={22} />
+            </div>
+            <span className="text-[10px] font-bold">Family Photo</span>
           </button>
 
           <button
@@ -332,33 +412,19 @@ export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
               setShowWaliModal(true);
               setShowAttachMenu(false);
             }}
-            className="flex flex-col items-center gap-1 text-xs text-[#2A1620] hover:text-[#9B1B47]"
+            className="flex flex-col items-center gap-1 text-xs text-[#2A1620] hover:text-[#9B1B47] active:scale-95"
           >
-            <div className="w-11 h-11 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center">
-              <Phone size={20} />
+            <div className="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center shadow-xs">
+              <Phone size={22} />
             </div>
             <span className="text-[10px] font-bold">Wali Contact</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => {
-              handleSend(`📍 Location: ${partner.city}, ${partner.state}`);
-              setShowAttachMenu(false);
-            }}
-            className="flex flex-col items-center gap-1 text-xs text-[#2A1620] hover:text-[#9B1B47]"
-          >
-            <div className="w-11 h-11 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
-              <MapPin size={20} />
-            </div>
-            <span className="text-[10px] font-bold">City</span>
           </button>
         </div>
       )}
 
-      {/* 5. EMOJI PICKER DRAWER (WhatsApp Style) */}
+      {/* 5. EMOJI PICKER DRAWER */}
       {showEmojiPicker && (
-        <div className="bg-[#FFF8FA] border-t border-[#F0CDD5] px-4 py-2 flex items-center gap-3 overflow-x-auto scrollbar-none shrink-0">
+        <div className="shrink-0 bg-[#FFF8FA] border-t border-[#F0CDD5] px-4 py-2 flex items-center gap-3 overflow-x-auto scrollbar-none z-25">
           {quickEmojis.map((emoji) => (
             <button
               key={emoji}
@@ -372,28 +438,43 @@ export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
         </div>
       )}
 
-      {/* 6. WHATSAPP BOTTOM INPUT BAR */}
-      <div className="p-2 sm:p-3 bg-white border-t border-[#F0CDD5] flex items-center gap-2 shrink-0">
+      {/* 6. WHATSAPP BOTTOM CHATTING BOARD / INPUT BAR (LOCKED TO BOTTOM, NEVER CUT OFF) */}
+      <div className="shrink-0 z-30 bg-white border-t border-[#F0CDD5] px-2 sm:px-3 py-2 flex items-center gap-1.5 sm:gap-2 pb-[max(0.6rem,env(safe-area-inset-bottom))] shadow-lg">
+        {/* Hidden File Input for Real Gallery / Camera Upload */}
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept="image/*"
+          onChange={handlePhotoUpload}
+          className="hidden"
+        />
+
+        {/* Emoji Button */}
         <button
           type="button"
           onClick={() => {
             setShowEmojiPicker(!showEmojiPicker);
             setShowAttachMenu(false);
           }}
-          className="p-2 text-[#7A6670] hover:text-[#9B1B47] rounded-full hover:bg-[#FFF0F3] transition-colors"
+          className={`p-2 rounded-full transition-colors ${
+            showEmojiPicker ? 'bg-[#9B1B47] text-white' : 'text-[#7A6670] hover:text-[#9B1B47] hover:bg-[#FFF0F3]'
+          }`}
+          title="Emojis"
         >
           <Smile size={20} />
         </button>
 
-        <input
-          type="text"
-          value={inputVal}
-          onChange={(e) => setInputVal(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-          placeholder="Type a respectful message..."
-          className="flex-1 py-2.5 px-4 bg-[#FFF9FA] border border-[#EAC5CE] focus:border-[#9B1B47] rounded-full text-xs text-[#2A1620] placeholder-[#8E7B85] focus:outline-none shadow-xs"
-        />
+        {/* Direct Camera / Photo Send Button */}
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          className="p-2 text-[#7A6670] hover:text-[#9B1B47] hover:bg-[#FFF0F3] rounded-full transition-colors active:scale-95"
+          title="Send Photo from Gallery / Camera"
+        >
+          <Camera size={20} />
+        </button>
 
+        {/* Paperclip Attachment Menu */}
         <button
           type="button"
           onClick={() => {
@@ -403,33 +484,54 @@ export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
           className={`p-2 rounded-full transition-colors ${
             showAttachMenu ? 'bg-[#9B1B47] text-white' : 'text-[#7A6670] hover:text-[#9B1B47] hover:bg-[#FFF0F3]'
           }`}
-          title="Share Attachments / Biodata"
+          title="Share Photos &amp; Biodata"
         >
-          <Paperclip size={18} />
+          <Paperclip size={19} />
         </button>
 
-        {inputVal.trim() ? (
-          <button
-            type="button"
-            onClick={() => handleSend()}
-            className="w-10 h-10 rounded-full bg-gradient-to-r from-[#9B1B47] to-[#C51E50] text-white flex items-center justify-center hover:from-[#83143B] hover:to-[#B01A44] active:scale-95 shadow-md shadow-[#9B1B47]/30 transition-all shrink-0"
-            title="Send Message"
-          >
-            <Send size={16} strokeWidth={2.4} />
-          </button>
-        ) : (
-          <button
-            type="button"
-            onClick={() => handleSend('Assalamu alaikum wa rahmatullah')}
-            className="w-10 h-10 rounded-full bg-[#FFF0F3] text-[#9B1B47] flex items-center justify-center hover:bg-[#9B1B47] hover:text-white active:scale-95 shadow-xs transition-all shrink-0"
-            title="Quick Greeting"
-          >
-            <Mic size={17} strokeWidth={2.2} />
-          </button>
-        )}
+        {/* Text Input Field */}
+        <input
+          type="text"
+          value={inputVal}
+          onChange={(e) => setInputVal(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+          placeholder="Type a message..."
+          className="flex-1 py-2 sm:py-2.5 px-3.5 bg-[#FFF9FA] border border-[#EAC5CE] focus:border-[#9B1B47] rounded-full text-xs sm:text-sm text-[#2A1620] placeholder-[#8E7B85] focus:outline-none shadow-xs"
+        />
+
+        {/* Send Message Button (Always Prominently Visible) */}
+        <button
+          type="button"
+          onClick={() => handleSend()}
+          className="w-10 h-10 rounded-full bg-gradient-to-r from-[#9B1B47] to-[#C51E50] hover:from-[#83143B] hover:to-[#B01A44] text-white flex items-center justify-center active:scale-90 shadow-md shadow-[#9B1B47]/30 transition-all shrink-0 cursor-pointer"
+          title="Send Message"
+        >
+          <Send size={16} strokeWidth={2.4} />
+        </button>
       </div>
 
-      {/* 7. WALI CONTACT SHEET / MODAL */}
+      {/* 7. FULLSCREEN PHOTO PREVIEW MODAL */}
+      {previewPhotoModal && (
+        <div
+          onClick={() => setPreviewPhotoModal(null)}
+          className="fixed inset-0 z-[300] bg-black/90 flex items-center justify-center p-4 animate-fade-in"
+        >
+          <button
+            type="button"
+            onClick={() => setPreviewPhotoModal(null)}
+            className="absolute top-4 right-4 p-2 rounded-full bg-white/20 text-white hover:bg-white/40"
+          >
+            <X size={24} />
+          </button>
+          <img
+            src={previewPhotoModal}
+            alt="Preview"
+            className="max-h-[85vh] max-w-full rounded-2xl object-contain shadow-2xl"
+          />
+        </div>
+      )}
+
+      {/* 8. WALI CONTACT SHEET / MODAL */}
       {showWaliModal && (
         <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
           <div className="w-full max-w-sm bg-white rounded-3xl p-5 border border-[#F3D5DD] shadow-2xl relative animate-scale-up">
@@ -500,7 +602,7 @@ export const SecureChatScreen: React.FC<SecureChatScreenProps> = ({
         </div>
       )}
 
-      {/* 8. VIDEO CALL NOTICE MODAL */}
+      {/* 9. VIDEO CALL NOTICE MODAL */}
       {showVideoModal && (
         <div className="fixed inset-0 z-[250] flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-fade-in">
           <div className="w-full max-w-sm bg-white rounded-3xl p-5 border border-[#F3D5DD] shadow-2xl relative animate-scale-up text-center">
