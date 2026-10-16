@@ -284,15 +284,15 @@ export const NewProfilesScreen: React.FC<NewProfilesScreenProps> = ({
         ))}
       </div>
 
-      {/* FILTER BOTTOM SHEET MODAL (MATCHING RIGHT SCREEN OF IMAGE 1) */}
+      {/* FILTER BOTTOM SHEET MODAL (FIXED OVERLAY ABOVE BOTTOM NAV) */}
       {isFilterModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-end justify-center select-none">
+        <div className="fixed inset-0 z-[100] flex items-end justify-center select-none">
           <div
             onClick={() => setIsFilterModalOpen(false)}
-            className="fixed inset-0 bg-black/45 backdrop-blur-[2px] transition-opacity"
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
           />
 
-          <div className="relative w-full max-w-md bg-[#FFF9FA] rounded-t-[32px] p-5 pb-8 shadow-sheet z-10 border-t border-[#F8D2DC] animate-slide-up">
+          <div className="relative w-full max-w-md max-h-[88vh] overflow-y-auto bg-[#FFF9FA] rounded-t-[32px] p-5 pb-10 shadow-2xl z-[101] border-t border-[#F8D2DC] animate-slide-up">
             <div className="w-12 h-1.5 bg-[#E6BAC5] rounded-full mx-auto mb-4" />
 
             <div className="flex items-center justify-between mb-4">

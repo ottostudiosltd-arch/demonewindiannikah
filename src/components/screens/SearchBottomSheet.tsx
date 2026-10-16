@@ -23,15 +23,15 @@ export const SearchBottomSheet: React.FC<SearchBottomSheetProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center select-none">
+    <div className="fixed inset-0 z-[100] flex items-end justify-center select-none">
       {/* Dimmed Backdrop */}
       <div
         onClick={onClose}
-        className="fixed inset-0 bg-black/45 backdrop-blur-[2px] transition-opacity"
+        className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
       />
 
       {/* Bottom Sheet Container */}
-      <div className="relative w-full max-w-md bg-[#FFF9FA] rounded-t-[32px] p-5 pb-8 shadow-sheet z-10 border-t border-[#F8D2DC] animate-slide-up overflow-hidden">
+      <div className="relative w-full max-w-md max-h-[88vh] overflow-y-auto bg-[#FFF9FA] rounded-t-[32px] p-5 pb-10 shadow-2xl z-[101] border-t border-[#F8D2DC] animate-slide-up">
         {/* Soft Floral Botanical corner */}
         <FloralCornerBottom className="absolute -bottom-6 -right-6 w-32 h-32" />
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, MessageCircle, Heart, Star, Sparkles } from 'lucide-react';
+import { ShieldCheck, MessageCircle } from 'lucide-react';
 import { ScreenType } from '../../types';
 
 interface SiteFooterProps {
@@ -8,9 +8,24 @@ interface SiteFooterProps {
 
 export const SiteFooter: React.FC<SiteFooterProps> = ({ onNavigate }) => {
   return (
-    <footer className="mt-16 bg-gradient-to-b from-[#FFF5F7] to-[#FFF0F4] text-[#2A1620] border-t border-[#F3D5DD] select-none">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
+    <footer className="mt-8 sm:mt-16 bg-gradient-to-b from-[#FFF5F7] to-[#FFF0F4] text-[#2A1620] border-t border-[#F3D5DD] select-none">
+      {/* 1. SIMPLE CLEAN FOOTER FOR MOBILE (EXACT MATCH WITH USER IMAGE media_1792169568657.png) */}
+      <div className="md:hidden py-5 px-3 pb-24 text-center">
+        <p className="text-xs text-[#7A6670] leading-snug">
+          © 2026 IndiaNikah. Built with sincerity for the Muslim Ummah.
+        </p>
+        <div className="flex items-center justify-center gap-2 mt-2 text-[11px] text-[#8E7B85]">
+          <span onClick={() => onNavigate('guidelines')} className="hover:text-[#9B1B47] cursor-pointer">Privacy First</span>
+          <span>·</span>
+          <span onClick={() => onNavigate('guidelines')} className="hover:text-[#9B1B47] cursor-pointer">Terms of Service</span>
+          <span>·</span>
+          <span onClick={() => onNavigate('home')} className="hover:text-[#9B1B47] cursor-pointer">Halal Matchmaking</span>
+        </div>
+      </div>
+
+      {/* 2. RICH 4-COLUMN FOOTER FOR DESKTOP (PC & TABLET ONLY) */}
+      <div className="hidden md:block max-w-7xl mx-auto px-6 lg:px-8 pt-12 pb-8">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-10">
           {/* Col 1: Brand & Islamic Mission */}
           <div>
             <div className="flex items-center gap-2.5 mb-3">
@@ -143,15 +158,15 @@ export const SiteFooter: React.FC<SiteFooterProps> = ({ onNavigate }) => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="pt-6 border-t border-[#F3D5DD] flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-[#7A6670]">
-          <p>© {new Date().getFullYear()} IndiaNikah. Built with sincerity for the Muslim Ummah.</p>
+        {/* Desktop Bottom Bar (Matching media_1792169568657.png style) */}
+        <div className="pt-6 border-t border-[#F3D5DD] flex items-center justify-between gap-3 text-xs text-[#7A6670]">
+          <p>© 2026 IndiaNikah. Built with sincerity for the Muslim Ummah.</p>
           <div className="flex items-center gap-4">
-            <span className="hover:text-[#9B1B47] cursor-pointer">Privacy First</span>
+            <span onClick={() => onNavigate('guidelines')} className="hover:text-[#9B1B47] cursor-pointer">Privacy First</span>
             <span>·</span>
-            <span className="hover:text-[#9B1B47] cursor-pointer">Terms of Service</span>
+            <span onClick={() => onNavigate('guidelines')} className="hover:text-[#9B1B47] cursor-pointer">Terms of Service</span>
             <span>·</span>
-            <span className="hover:text-[#9B1B47] cursor-pointer">Halal Matchmaking</span>
+            <span onClick={() => onNavigate('home')} className="hover:text-[#9B1B47] cursor-pointer">Halal Matchmaking</span>
           </div>
         </div>
       </div>

@@ -22,7 +22,7 @@ export const BottomNavigation: React.FC<BottomNavigationProps> = ({
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#F3D5DD] px-3 py-1.5 flex items-center justify-around z-40 shadow-lg select-none">
+    <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#F3D5DD] px-3 py-1.5 flex items-center justify-around z-30 shadow-lg select-none">
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = currentTab === tab.id;
