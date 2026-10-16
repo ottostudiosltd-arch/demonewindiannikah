@@ -163,7 +163,11 @@ export default function App() {
         return (
           <SecureChatScreen
             partner={chatPartner}
-            onBack={() => setCurrentScreen('proposals')}
+            onBack={() => {
+              setCurrentScreen('proposals');
+              setCurrentTab('proposals');
+            }}
+            onSelectProfile={(p) => setSelectedProfile(p)}
           />
         );
 
@@ -195,56 +199,65 @@ export default function App() {
     }
   };
 
+  const isChatOpen = currentScreen === 'secure-chat';
+
   const showMobileBottomNav =
-    currentScreen === 'home' ||
+    !isChatOpen &&
+    (currentScreen === 'home' ||
     currentScreen === 'new-profiles' ||
     currentScreen === 'search-results' ||
     currentScreen === 'proposals' ||
     currentScreen === 'favorites' ||
-    currentScreen === 'profile';
+    currentScreen === 'profile');
 
   return (
     <div className="min-h-screen bg-[#FFF9FA] text-[#2A1620] flex flex-col font-sans selection:bg-[#FFE4EA] selection:text-[#9B1B47]">
-      {/* 1. DESKTOP HEADER (Visible on PC & Tablets, hidden on Mobile) */}
-      <div className="hidden md:block">
-        <DesktopHeader
-          currentScreen={currentScreen}
-          onNavigate={(scr) => {
-            setCurrentScreen(scr);
-            if (scr === 'home') setCurrentTab('home');
-            if (scr === 'new-profiles') setCurrentTab('new-profiles');
-            if (scr === 'proposals') setCurrentTab('proposals');
-            if (scr === 'profile') setCurrentTab('profile');
-          }}
-          proposalCount={sentProposalIds.length}
-        />
-      </div>
+      {/* 1. DESKTOP HEADER (Visible on PC & Tablets, hidden on Mobile, hidden in Chat) */}
+      {!isChatOpen && (
+        <div className="hidden md:block">
+          <DesktopHeader
+            currentScreen={currentScreen}
+            onNavigate={(scr) => {
+              setCurrentScreen(scr);
+              if (scr === 'home') setCurrentTab('home');
+              if (scr === 'new-profiles') setCurrentTab('new-profiles');
+              if (scr === 'proposals') setCurrentTab('proposals');
+              if (scr === 'profile') setCurrentTab('profile');
+            }}
+            proposalCount={sentProposalIds.length}
+          />
+        </div>
+      )}
 
-      {/* 2. MOBILE HEADER (Visible on Mobile screens, hidden on PC) */}
-      <div className="md:hidden">
-        <MobileHeader
-          onOpenSidebar={() => setIsSidebarOpen(true)}
-          onNavigateToProfile={() => {
-            setCurrentScreen('profile');
-            setCurrentTab('profile');
-          }}
-        />
-      </div>
+      {/* 2. MOBILE HEADER (Visible on Mobile screens, hidden on PC, hidden in Chat) */}
+      {!isChatOpen && (
+        <div className="md:hidden">
+          <MobileHeader
+            onOpenSidebar={() => setIsSidebarOpen(true)}
+            onNavigateToProfile={() => {
+              setCurrentScreen('profile');
+              setCurrentTab('profile');
+            }}
+          />
+        </div>
+      )}
 
       {/* 3. MAIN CONTENT VIEWPORT */}
-      <main className="flex-1 w-full">
+      <main className={`flex-1 w-full ${isChatOpen ? 'h-screen overflow-hidden p-0 m-0' : ''}`}>
         {renderScreenContent()}
       </main>
 
-      {/* 4. FOOTER (Updated to soft blush/cream theme matching entire site) */}
-      <SiteFooter
-        onNavigate={(scr) => {
-          setCurrentScreen(scr);
-          window.scrollTo({ top: 0, behavior: 'smooth' });
-        }}
-      />
+      {/* 4. FOOTER (Hidden when Chat is active) */}
+      {!isChatOpen && (
+        <SiteFooter
+          onNavigate={(scr) => {
+            setCurrentScreen(scr);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }}
+        />
+      )}
 
-      {/* 5. MOBILE BOTTOM NAVIGATION (Fixed bar on mobile) */}
+      {/* 5. MOBILE BOTTOM NAVIGATION (Hidden when Chat is active) */}
       {showMobileBottomNav && (
         <div className="md:hidden">
           <BottomNavigation
